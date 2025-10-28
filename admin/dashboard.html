@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AttendPro - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dashboard-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard-card p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card h4 {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--info-color);
+            color: var(--info-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <i class="fas fa-crown"></i>
+            AttendPro Admin Dashboard
+        </h1>
+        <div class="user-info">
+            <span id="adminName">Admin User</span>
+            <a href="login.html" class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Welcome to AttendPro Admin Dashboard. Manage your attendance system from here.
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h4>Total Faculty</h4>
+                <div class="count" id="facultyCount">-</div>
+            </div>
+            <div class="stat-card">
+                <h4>Total Students</h4>
+                <div class="count" id="studentCount">-</div>
+            </div>
+            <div class="stat-card">
+                <h4>Total Classes</h4>
+                <div class="count" id="classCount">-</div>
+            </div>
+            <div class="stat-card">
+                <h4>Today's Attendance</h4>
+                <div class="count" id="attendanceCount">-</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3><i class="fas fa-users"></i> User Management</h3>
+                <p>Manage faculty and student accounts, add new users, and update user information.</p>
+                <a href="#" class="btn btn-primary" onclick="manageUsers()">
+                    <i class="fas fa-cog"></i>
+                    Manage Users
+                </a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3><i class="fas fa-chalkboard"></i> Class Management</h3>
+                <p>Create and manage classes, sections, and academic years.</p>
+                <a href="#" class="btn btn-success" onclick="manageClasses()">
+                    <i class="fas fa-plus"></i>
+                    Manage Classes
+                </a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3><i class="fas fa-book"></i> Subject Management</h3>
+                <p>Add subjects, assign faculty, and manage subject details.</p>
+                <a href="#" class="btn btn-info" onclick="manageSubjects()">
+                    <i class="fas fa-edit"></i>
+                    Manage Subjects
+                </a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3><i class="fas fa-bullhorn"></i> Notice Management</h3>
+                <p>Create and manage system notices for faculty and students.</p>
+                <a href="#" class="btn btn-warning" onclick="manageNotices()">
+                    <i class="fas fa-megaphone"></i>
+                    Manage Notices
+                </a>
+            </div>
+
+
+
+            <div class="dashboard-card">
+                <h3><i class="fas fa-chart-bar"></i> Reports</h3>
+                <p>View attendance reports, statistics, and system analytics.</p>
+                <a href="#" class="btn btn-primary" onclick="viewReports()">
+                    <i class="fas fa-chart-line"></i>
+                    View Reports
+                </a>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+
+        // Check if admin is logged in
+        window.addEventListener('load', function() {
+            const adminLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            const adminName = sessionStorage.getItem('adminName');
+            
+            if (!adminLoggedIn) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            if (adminName) {
+                document.getElementById('adminName').textContent = adminName;
+            }
+            
+            loadDashboardStats();
+        });
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        function loadDashboardStats() {
+            showLoading();
+            
+            // For now, show sample data
+            setTimeout(() => {
+                hideLoading();
+                document.getElementById('facultyCount').textContent = '5';
+                document.getElementById('studentCount').textContent = '25';
+                document.getElementById('classCount').textContent = '3';
+                document.getElementById('attendanceCount').textContent = '18';
+            }, 1000);
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function manageUsers() {
+            alert('User Management feature coming soon!');
+        }
+
+        function manageClasses() {
+            alert('Class Management feature coming soon!');
+        }
+
+        function manageSubjects() {
+            alert('Subject Management feature coming soon!');
+        }
+
+        function manageNotices() {
+            alert('Notice Management feature coming soon!');
+        }
+
+        function viewReports() {
+            alert('Reports feature coming soon!');
+        }
+    </script>
+</body>
+</html>

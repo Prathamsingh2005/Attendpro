@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AttendPro - Master Setup</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .setup-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .setup-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        .credentials {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .credential-item:last-child {
+            border-bottom: none;
+        }
+
+        .credential-item code {
+            background: var(--bg-light);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-color);
+        }
+
+        .code-block {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .status-item {
+            background: var(--bg-white);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-item .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-crown"></i> Master Setup Panel</h1>
+            <p>Exclusive access - System Administrator only</p>
+        </div>
+
+        <div class="setup-grid">
+            <div class="setup-card">
+                <h3><i class="fas fa-database"></i> Database Setup</h3>
+                <p>Initialize database with all required tables and default data.</p>
+                <button class="btn btn-primary" onclick="setupDatabase()">
+                    <i class="fas fa-play"></i> Setup Database
+                </button>
+            </div>
+
+            <div class="setup-card">
+                <h3><i class="fas fa-users"></i> Create Sample Data</h3>
+                <p>Add sample faculty, students, and classes for testing.</p>
+                <button class="btn btn-warning" onclick="createSampleData()">
+                    <i class="fas fa-plus"></i> Add Sample Data
+                </button>
+            </div>
+
+            <div class="setup-card">
+                <h3><i class="fas fa-vial"></i> Test System</h3>
+                <p>Test all system features to ensure everything is working.</p>
+                <button class="btn btn-success" onclick="testSystem()">
+                    <i class="fas fa-check"></i> Run Tests
+                </button>
+            </div>
+
+            <div class="setup-card">
+                <h3><i class="fas fa-info-circle"></i> System Status</h3>
+                <p>Check current system status and statistics.</p>
+                <button class="btn btn-danger" onclick="getSystemStatus()">
+                    <i class="fas fa-chart-bar"></i> Check Status
+                </button>
+            </div>
+        </div>
+
+        <div id="results"></div>
+
+        <div class="credentials">
+            <h3><i class="fas fa-key"></i> System Credentials</h3>
+            <div class="credential-item">
+                <strong>Admin:</strong>
+                <code>admin / admin123</code>
+            </div>
+            <div class="credential-item">
+                <strong>Faculty:</strong>
+                <code>john.smith / faculty123</code>
+            </div>
+            <div class="credential-item">
+                <strong>Student:</strong>
+                <code>STU001 / student123</code>
+            </div>
+        </div>
+
+        <div class="setup-card" style="margin-top: 2rem;">
+            <h3><i class="fas fa-rocket"></i> Quick Access</h3>
+            <div style="margin-top: 1rem;">
+                <a href="dashboard.html" class="btn btn-primary">
+                    <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                </a>
+                <a href="../index.html" class="btn btn-success">
+                    <i class="fas fa-home"></i> Main Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+
+        function showResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'warning' ? 'alert-warning' : 
+                              type === 'danger' ? 'alert-danger' : 'alert-info';
+            
+            resultsDiv.innerHTML += `
+                <div class="alert ${alertClass}">
+                    <h4>${title}</h4>
+                    <p>${content}</p>
+                </div>
+            `;
+        }
+
+        function setupDatabase() {
+            showResult('Setting up database...', 'Please wait while database is being initialized.', 'warning');
+            
+            fetch(`${API_BASE}/setup/database`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showResult('Database Setup Complete', data.message, 'success');
+                } else {
+                    showResult('Database Setup Error', data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showResult('Database Setup Failed', 'Make sure Java backend is running. Run: cd backend-java && mvnw.cmd spring-boot:run', 'danger');
+            });
+        }
+
+        function createSampleData() {
+            showResult('Creating sample data...', 'Adding faculty, students, and classes.', 'warning');
+            
+            fetch(`${API_BASE}/setup/sample-data`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showResult('Sample Data Created', data.message, 'success');
+                } else {
+                    showResult('Sample Data Creation Failed', data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showResult('Sample Data Creation Failed', 'Make sure Java backend is running.', 'danger');
+            });
+        }
+
+        function testSystem() {
+            showResult('Testing system...', 'Running comprehensive system tests.', 'warning');
+            
+            fetch(`${API_BASE}/setup/test`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let testResults = '<h4>Test Results:</h4>';
+                    data.tests.forEach(test => {
+                        const statusClass = test.status === 'PASS' ? 'success' : 
+                                          test.status === 'WARN' ? 'warning' : 'danger';
+                        testResults += `<p><strong>${test.name}:</strong> <span class="alert-${statusClass}">${test.status}</span> - ${test.message}</p>`;
+                    });
+                    showResult('System Tests Complete', testResults, 'success');
+                } else {
+                    showResult('System Tests Failed', data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showResult('System Tests Failed', 'Make sure Java backend is running.', 'danger');
+            });
+        }
+
+        function getSystemStatus() {
+            showResult('Checking system status...', 'Gathering system information.', 'warning');
+            
+            fetch(`${API_BASE}/setup/status`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let statusHtml = `
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <h4>Admins</h4>
+                                <div class="count">${data.admin_count}</div>
+                            </div>
+                            <div class="status-item">
+                                <h4>Faculty</h4>
+                                <div class="count">${data.faculty_count}</div>
+                            </div>
+                            <div class="status-item">
+                                <h4>Students</h4>
+                                <div class="count">${data.student_count}</div>
+                            </div>
+                            <div class="status-item">
+                                <h4>Classes</h4>
+                                <div class="count">${data.class_count}</div>
+                            </div>
+                            <div class="status-item">
+                                <h4>Subjects</h4>
+                                <div class="count">${data.subject_count}</div>
+                            </div>
+                            <div class="status-item">
+                                <h4>Notices</h4>
+                                <div class="count">${data.notice_count}</div>
+                            </div>
+                        </div>
+                    `;
+                    showResult('System Status', statusHtml, 'success');
+                } else {
+                    showResult('Status Check Failed', data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showResult('Status Check Failed', 'Make sure Java backend is running.', 'danger');
+            });
+        }
+
+        // Auto-check system status on page load
+        window.addEventListener('load', () => {
+            fetch(`${API_BASE}/setup/status`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.system_ready) {
+                    showResult('System Ready', 'Java backend is running and database is set up!', 'success');
+                } else {
+                    showResult('Setup Required', 'Please run the database setup to get started.', 'warning');
+                }
+            })
+            .catch(error => {
+                showResult('Backend Not Running', 'Please start the Java backend server. Run: cd backend-java && mvnw.cmd spring-boot:run', 'danger');
+            });
+        });
+    </script>
+</body>
+</html>

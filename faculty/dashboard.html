@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AttendPro - Enhanced Faculty Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --info-color: #3b82f6;
+      --bg-light: #f8fafc;
+      --bg-white: #ffffff;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --text-muted: #9ca3af;
+      --border-color: #e5e7eb;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --border-radius: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* General Styles */
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+
+    .header {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-lg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+    }
+
+    .datetime {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .header-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .header-btn.logout {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .header-btn.logout:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    .main-container {
+      display: flex;
+      min-height: calc(100vh - 80px);
+    }
+
+    .sidebar {
+      width: 280px;
+      background: var(--bg-white);
+      box-shadow: var(--shadow-md);
+      padding: 2rem 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-right: 3px solid transparent;
+      color: var(--text-dark);
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-light);
+      color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background: var(--bg-light);
+      color: var(--primary-color);
+      border-right-color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    .card {
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-white);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      transition: transform 0.3s ease;
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1rem;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .stat-label {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-success {
+      background: var(--success-color);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+      transform: translateY(-1px);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: var(--bg-white);
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .table-container {
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th, .table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .table th {
+      background: var(--bg-light);
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+    }
+
+    .table tbody tr:hover {
+      background: var(--bg-light);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .close-btn:hover {
+      background: var(--bg-light);
+      color: var(--text-dark);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .notice-card {
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .notice-header {
+      padding: 1rem 1.5rem;
+      background: var(--primary-gradient);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notice-priority {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .notice-priority.high {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger-color);
+    }
+
+    .notice-priority.medium {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning-color);
+    }
+
+    .notice-priority.low {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success-color);
+    }
+
+    .notice-body {
+      padding: 1.5rem;
+    }
+
+    .notice-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .notice-attachment {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-light);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      text-decoration: none;
+      color: var(--primary-color);
+      font-size: 0.9rem;
+    }
+
+    .notice-attachment:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--bg-light);
+    }
+
+    .upload-area:hover, .upload-area.drag-over {
+      border-color: var(--primary-color);
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .timetable-grid {
+      display: grid;
+      grid-template-columns: 120px repeat(6, 1fr);
+      gap: 2px;
+      background: var(--border-color);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .timetable-header {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .timetable-cell {
+      background: var(--bg-white);
+      padding: 0.75rem;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .timetable-cell:hover {
+      background: var(--bg-light);
+    }
+
+    .timetable-cell.empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+    }
+
+    .timetable-subject {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.25rem;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .quick-action {
+      background: var(--bg-white);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--text-dark);
+    }
+
+    .quick-action:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      color: var(--primary-color);
+    }
+
+    .quick-action-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-color);
+    }
+
+    .notification {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 6px;
+      box-shadow: var(--shadow-lg);
+      color: white;
+      font-weight: 600;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.4s ease;
+      max-width: 400px;
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .notification.success { background: var(--success-color); }
+    .notification.error { background: var(--danger-color); }
+    .notification.warning { background: var(--warning-color); }
+    .notification.info { background: var(--info-color); }
+
+    .page-section {
+      display: none;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    .attendance-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .status-select {
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background: var(--bg-white);
+    }
+
+    .status-select.present { border-color: var(--success-color); }
+    .status-select.absent { border-color: var(--danger-color); }
+    .status-select.late { border-color: var(--warning-color); }
+
+    .filter-bar {
+      background: var(--bg-white);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .notice-composer {
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .composer-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-light);
+    }
+
+    .composer-body {
+      padding: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      .nav-item {
+        white-space: nowrap;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 3px solid transparent;
+      }
+
+      .nav-item.active {
+        border-right: none;
+        border-bottom-color: var(--primary-color);
+      }
+
+      .content {
+        padding: 1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        padding: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .header-right {
+        gap: 0.5rem;
+      }
+
+      .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      /* Notes Section Styles */
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .file-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+        padding: 10px;
+        background: var(--bg-light);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+      }
+
+      .file-item {
+        position: relative;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 8px;
+        background: var(--bg-white);
+        max-width: 150px;
+      }
+
+      .file-item img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .file-item .file-info {
+        margin-top: 5px;
+        text-align: center;
+      }
+
+      .file-item .file-name {
+        font-size: 0.8rem;
+        color: var(--text-dark);
+        word-break: break-word;
+      }
+
+      .file-item .file-size {
+        font-size: 0.7rem;
+        color: var(--text-light);
+      }
+
+      .file-item .remove-file {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .file-item .remove-file:hover {
+        background: #c82333;
+      }
+
+      .note-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .note-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+      }
+
+      .note-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+      }
+
+      .note-content {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+      }
+
+      .note-attachments {
+        margin-top: 10px;
+        padding: 10px;
+        background: var(--bg-light);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      .note-attachments h6 {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+      }
+
+      .attachment-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .attachment-item:last-child {
+        border-bottom: none;
+      }
+
+      .attachment-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 4px;
+        font-size: 0.8rem;
+      }
+
+      .attachment-info {
+        flex: 1;
+      }
+
+      .attachment-name {
+        font-size: 0.8rem;
+        color: var(--text-dark);
+        font-weight: 500;
+      }
+
+      .attachment-size {
+        font-size: 0.7rem;
+        color: var(--text-light);
+      }
+
+      .attachment-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .attachment-actions button {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+      }
+
+      /* Modal Styles */
+      .modal-custom {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .modal-content-custom {
+        background: var(--bg-white);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        max-width: 80vw;
+        max-height: 80vh;
+        overflow: auto;
+        box-shadow: var(--shadow-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        AttendPro Faculty
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span id="facultyName">Dr. Faculty</span>
+      </div>
+      <div class="datetime" id="currentDateTime"></div>
+      <button class="header-btn logout" onclick="App.logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <nav>
+        <a href="#" class="nav-item active" onclick="App.switchPage('dashboard', this)">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="#" class="nav-item" onclick="App.switchPage('attendance', this)">
+          <i class="fas fa-calendar-check"></i> Mark Attendance
+        </a>
+        <a href="#" class="nav-item" onclick="App.switchPage('students', this)">
+          <i class="fas fa-users"></i> Student Management
+        </a>
+        <a href="#" class="nav-item" onclick="App.switchPage('timetable', this)">
+          <i class="fas fa-calendar-alt"></i> Timetable
+        </a>
+        <a href="#" class="nav-item" onclick="App.switchPage('notices', this)">
+          <i class="fas fa-bullhorn"></i> Notice Board
+        </a>
+        <a href="#" class="nav-item" onclick="App.switchPage('notes', this)">
+          <i class="fas fa-sticky-note"></i> Study Notes
+        </a>
+        <a href="#" class="nav-item" onclick="App.switchPage('reports', this)">
+          <i class="fas fa-chart-line"></i> Reports & Analytics
+        </a>
+        <a href="#" class="nav-item" onclick="App.switchPage('settings', this)">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="dashboard" class="page-section active fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Dashboard Overview</h1>
+          <p class="page-subtitle">Welcome to your attendance management dashboard</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-value" id="totalStudents">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: var(--success-color);"><i class="fas fa-check"></i></div>
+            <div class="stat-value" style="color: var(--success-color);" id="presentToday">0</div>
+            <div class="stat-label">Present Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: var(--danger-color);"><i class="fas fa-times"></i></div>
+            <div class="stat-value" style="color: var(--danger-color);" id="absentToday">0</div>
+            <div class="stat-label">Absent Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: var(--warning-color);"><i class="fas fa-clock"></i></div>
+            <div class="stat-value" style="color: var(--warning-color);" id="lateToday">0</div>
+            <div class="stat-label">Late Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: var(--info-color);"><i class="fas fa-percentage"></i></div>
+            <div class="stat-value" style="color: var(--info-color);" id="attendanceRate">0%</div>
+            <div class="stat-label">Overall Attendance</div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <div class="quick-action" onclick="App.switchPage('attendance', document.querySelector('[onclick*=\'attendance\']'))">
+            <div class="quick-action-icon"><i class="fas fa-calendar-check"></i></div>
+            <div>Mark Attendance</div>
+          </div>
+          <div class="quick-action" onclick="App.switchPage('notices', document.querySelector('[onclick*=\'notices\']'))">
+            <div class="quick-action-icon"><i class="fas fa-bullhorn"></i></div>
+            <div>Post Notice</div>
+          </div>
+          <div class="quick-action" onclick="App.switchPage('students', document.querySelector('[onclick*=\'students\']'))">
+            <div class="quick-action-icon"><i class="fas fa-user-plus"></i></div>
+            <div>Add Student</div>
+          </div>
+          <div class="quick-action" onclick="App.switchPage('reports', document.querySelector('[onclick*=\'reports\']'))">
+            <div class="quick-action-icon"><i class="fas fa-chart-bar"></i></div>
+            <div>View Reports</div>
+          </div>
+          <div class="quick-action" onclick="App.switchPage('notes', document.querySelector('[onclick*=\'notes\']'))">
+            <div class="quick-action-icon"><i class="fas fa-sticky-note"></i></div>
+            <div>Share Notes</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Activity</h3>
+          </div>
+          <div class="card-body">
+            <div id="recentActivity">
+              <p class="text-muted">No recent activity</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="attendance" class="page-section fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Mark Attendance</h1>
+          <p class="page-subtitle">Track student attendance efficiently</p>
+        </div>
+        <div class="filter-bar">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" id="attendanceDate" class="form-input" onchange="App.loadAttendanceData()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Class</label>
+            <select id="attendanceClassFilter" class="form-select" onchange="App.loadAttendanceData()">
+              <option value="all">All Classes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Search Students</label>
+            <input type="text" id="studentSearchAttendance" class="search-input" placeholder="Search by name or ID..." oninput="App.filterAttendanceTable()">
+          </div>
+        </div>
+        <div class="attendance-controls">
+          <button class="btn btn-success" onclick="App.markAll('present')"><i class="fas fa-check-double"></i> Mark All Present</button>
+          <button class="btn btn-danger" onclick="App.markAll('absent')"><i class="fas fa-ban"></i> Mark All Absent</button>
+          <button class="btn btn-primary" onclick="App.saveAttendance()"><i class="fas fa-save"></i> Save Attendance</button>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Roll No.</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="students" class="page-section fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Student Management</h1>
+          <p class="page-subtitle">Add, edit, or remove student records</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Add New Student</h3>
+            <button class="btn btn-primary" onclick="App.addBulkStudents()"><i class="fas fa-file-import"></i> Bulk Add Students</button>
+          </div>
+          <div class="card-body">
+            <form id="addStudentForm">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="studentName">Student Name</label>
+                  <input type="text" id="studentName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="studentRoll">Roll No.</label>
+                  <input type="text" id="studentRoll" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="studentClass">Class</label>
+                  <select id="studentClass" class="form-select" required>
+                    <option value="CS-A">CS-A</option>
+                    <option value="CS-B">CS-B</option>
+                    <option value="CS-C">CS-C</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success"><i class="fas fa-user-plus"></i> Add Student</button>
+            </form>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 2rem;">
+          <div class="card-header">
+            <h3 class="card-title">All Students</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Roll No.</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="timetable" class="page-section fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Timetable</h1>
+          <p class="page-subtitle">Click on a cell to add or edit a class</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Weekly Schedule</h3>
+            <button class="btn btn-primary" onclick="App.saveTimetable()"><i class="fas fa-save"></i> Save Timetable</button>
+          </div>
+          <div class="card-body">
+            <div class="timetable-grid" id="timetableGrid">
+              <div class="timetable-header">Time / Day</div>
+              <div class="timetable-header">Mon</div>
+              <div class="timetable-header">Tue</div>
+              <div class="timetable-header">Wed</div>
+              <div class="timetable-header">Thu</div>
+              <div class="timetable-header">Fri</div>
+              <div class="timetable-header">Sat</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="notices" class="page-section fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Notice Board</h1>
+          <p class="page-subtitle">Create and publish notices for students</p>
+        </div>
+        <div class="notice-composer card">
+          <div class="composer-header">
+            <h3 class="card-title">Create New Notice</h3>
+          </div>
+          <div class="composer-body">
+            <div class="form-group">
+              <label class="form-label" for="noticeTitle">Notice Title</label>
+              <input type="text" id="noticeTitle" class="form-input" placeholder="e.g. Exam Schedule Update" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="noticeContent">Notice Content (Text)</label>
+              <textarea id="noticeContent" class="form-textarea" placeholder="Type your detailed notice here..." rows="6"></textarea>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="noticePriority">Priority</label>
+                <select id="noticePriority" class="form-select">
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="noticeClass">Target Class</label>
+                <select id="noticeClass" class="form-select">
+                  <option value="All Classes">All Classes</option>
+                  <option value="CS-A">CS-A</option>
+                  <option value="CS-B">CS-B</option>
+                  <option value="CS-C">CS-C</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="noticeImage">Upload Image (Optional)</label>
+              <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <p>Drag & drop an image here or click to browse</p>
+                <input type="file" id="noticeImage" class="hidden" accept="image/*">
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="App.publishNotice()"><i class="fas fa-paper-plane"></i> Publish Notice</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Notices</h3>
+          </div>
+          <div class="card-body" id="noticesList">
+            <p class="text-muted">No notices published yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="notes" class="page-section fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Study Notes Management</h1>
+          <p class="page-subtitle">Create and share study materials with students</p>
+        </div>
+        
+        <!-- Note Creation Form -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Create New Study Note</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="noteTitle">Note Title</label>
+                <input type="text" id="noteTitle" class="form-input" placeholder="e.g. Introduction to Data Structures" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="noteSubject">Subject</label>
+                <select id="noteSubject" class="form-select" required>
+                  <option value="">Select Subject</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Physics">Physics</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="English">English</option>
+                  <option value="History">History</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="noteClass">Target Class</label>
+                <select id="noteClass" class="form-select" required>
+                  <option value="">Select Class</option>
+                  <option value="CS-A">CS-A</option>
+                  <option value="CS-B">CS-B</option>
+                  <option value="CS-C">CS-C</option>
+                  <option value="All Classes">All Classes</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="noteContent">Note Content</label>
+                <textarea id="noteContent" class="form-textarea" placeholder="Write your detailed study notes here..." rows="6" required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="notePdf">Upload PDF (Optional)</label>
+                <input type="file" id="notePdf" class="form-input" accept=".pdf" multiple>
+                <small class="text-muted">Upload PDF files (max 10MB each)</small>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="noteImages">Upload Images (Optional)</label>
+                <input type="file" id="noteImages" class="form-input" accept="image/*" multiple>
+                <small class="text-muted">Upload images (JPG, PNG, GIF, max 10MB each)</small>
+              </div>
+            </div>
+            <div class="file-preview" id="facultyFilePreview">
+              <!-- File previews will be shown here -->
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="App.createNote()">
+                <i class="fas fa-save"></i> Create & Share Note
+              </button>
+              <button class="btn btn-secondary" onclick="App.clearNoteForm()">
+                <i class="fas fa-eraser"></i> Clear Form
+              </button>
+              <button class="btn btn-info" onclick="App.debugCurrentFiles()">
+                <i class="fas fa-bug"></i> Debug Files
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes List -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Shared Notes</h3>
+            <div class="header-actions">
+              <select id="filterSubject" class="form-select" onchange="App.filterNotes()">
+                <option value="">All Subjects</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="English">English</option>
+                <option value="History">History</option>
+              </select>
+              <select id="filterClass" class="form-select" onchange="App.filterNotes()">
+                <option value="">All Classes</option>
+                <option value="CS-A">CS-A</option>
+                <option value="CS-B">CS-B</option>
+                <option value="CS-C">CS-C</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body" id="facultyNotesList">
+            <p class="text-muted">No notes shared yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="reports" class="page-section fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Reports & Analytics</h1>
+          <p class="page-subtitle">Generate and view attendance reports</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Generate Report</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="reportClass">Select Class</label>
+                <select id="reportClass" class="form-select">
+                  <option value="all">All Classes</option>
+                  <option value="CS-A">CS-A</option>
+                  <option value="CS-B">CS-B</option>
+                  <option value="CS-C">CS-C</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reportDateFrom">From Date</label>
+                <input type="date" id="reportDateFrom" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reportDateTo">To Date</label>
+                <input type="date" id="reportDateTo" class="form-input">
+              </div>
+            </div>
+            <button class="btn btn-success" onclick="App.generateReport()"><i class="fas fa-chart-bar"></i> Generate Report</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 2rem;">
+          <div class="card-header">
+            <h3 class="card-title">Report Summary</h3>
+          </div>
+          <div class="card-body" id="reportSummary">
+            <p class="text-muted">Generate a report to see the summary here.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="settings" class="page-section fade-in">
+        <div class="page-header">
+          <h1 class="page-title">Settings</h1>
+          <p class="page-subtitle">Manage your account and system preferences</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Account Settings</h3>
+          </div>
+          <div class="card-body">
+            <form id="accountSettingsForm">
+              <div class="form-group">
+                <label class="form-label" for="facultyNameInput">Faculty Name</label>
+                <input type="text" id="facultyNameInput" class="form-input" value="Dr. Faculty">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="facultyEmailInput">Email Address</label>
+                <input type="email" id="facultyEmailInput" class="form-input" value="faculty@attendpro.edu">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="oldPassword">Change Password</label>
+                <input type="password" id="oldPassword" class="form-input" placeholder="Old Password">
+              </div>
+              <div class="form-group">
+                <input type="password" id="newPassword" class="form-input" placeholder="New Password">
+              </div>
+              <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+            </form>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 2rem;">
+          <div class="card-header">
+            <h3 class="card-title">Data Management</h3>
+          </div>
+          <div class="card-body">
+            <p>Manage your application data.</p>
+            <button class="btn btn-primary" onclick="App.backupData()"><i class="fas fa-download"></i> Backup Data</button>
+            <button class="btn btn-secondary" onclick="App.restoreData()"><i class="fas fa-upload"></i> Restore Data</button>
+            <button class="btn btn-danger" onclick="App.clearAllData()"><i class="fas fa-eraser"></i> Clear All Data</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <div id="classModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add/Edit Class</h3>
+        <button class="close-btn" onclick="App.closeModal('classModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="classForm">
+          <div class="form-group">
+            <label class="form-label" for="classSubject">Subject Name</label>
+            <input type="text" id="classSubject" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="classTeacher">Teacher Name</label>
+            <input type="text" id="classTeacher" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="classTime">Time Slot</label>
+            <input type="text" id="classTime" class="form-input" required placeholder="e.g. 9:00 AM - 10:00 AM">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="classRoom">Room No.</label>
+            <input type="text" id="classRoom" class="form-input" required>
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Class</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <script>
+    const App = {
+      // --- Data Storage (using localStorage) ---
+      data: {
+        allStudents: JSON.parse(localStorage.getItem('allStudents')) || [],
+        notices: JSON.parse(localStorage.getItem('notices')) || [],
+        sharedNotes: JSON.parse(localStorage.getItem('sharedNotes')) || [],
+        attendanceRecords: JSON.parse(localStorage.getItem('attendanceRecords')) || {},
+        timetable: JSON.parse(localStorage.getItem('timetable')) || {},
+        facultyName: localStorage.getItem('facultyName') || 'Dr. Faculty',
+        recentActivity: JSON.parse(localStorage.getItem('recentActivity')) || []
+      },
+
+      // --- UI Elements ---
+      elements: {
+        pages: document.querySelectorAll('.page-section'),
+        navItems: document.querySelectorAll('.nav-item'),
+        facultyNameDisplay: document.getElementById('facultyName'),
+        facultyNameInput: document.getElementById('facultyNameInput'),
+        currentDateTime: document.getElementById('currentDateTime'),
+        dashboardStats: {
+          totalStudents: document.getElementById('totalStudents'),
+          presentToday: document.getElementById('presentToday'),
+          absentToday: document.getElementById('absentToday'),
+          lateToday: document.getElementById('lateToday'),
+          attendanceRate: document.getElementById('attendanceRate')
+        },
+        addStudentForm: document.getElementById('addStudentForm'),
+        studentTableBody: document.getElementById('studentTableBody'),
+        attendanceDate: document.getElementById('attendanceDate'),
+        attendanceClassFilter: document.getElementById('attendanceClassFilter'),
+        studentSearchAttendance: document.getElementById('studentSearchAttendance'),
+        attendanceTableBody: document.getElementById('attendanceTableBody'),
+        timetableGrid: document.getElementById('timetableGrid'),
+        noticeForm: {
+          title: document.getElementById('noticeTitle'),
+          content: document.getElementById('noticeContent'),
+          image: document.getElementById('noticeImage'),
+          priority: document.getElementById('noticePriority'),
+          targetClass: document.getElementById('noticeClass'),
+        },
+        noticesList: document.getElementById('noticesList'),
+        notesForm: {
+          title: document.getElementById('noteTitle'),
+          subject: document.getElementById('noteSubject'),
+          class: document.getElementById('noteClass'),
+          content: document.getElementById('noteContent'),
+          pdf: document.getElementById('notePdf'),
+          images: document.getElementById('noteImages')
+        },
+        facultyFilePreview: document.getElementById('facultyFilePreview'),
+        facultyNotesList: document.getElementById('facultyNotesList'),
+        reportForm: {
+          reportClass: document.getElementById('reportClass'),
+          dateFrom: document.getElementById('reportDateFrom'),
+          dateTo: document.getElementById('reportDateTo'),
+        },
+        reportSummary: document.getElementById('reportSummary'),
+        accountSettingsForm: document.getElementById('accountSettingsForm'),
+        notification: document.getElementById('notification'),
+        classModal: document.getElementById('classModal'),
+        classForm: document.getElementById('classForm')
+      },
+      
+      // --- Initialization ---
+      init: function() {
+        this.bindEvents();
+        this.updateDateTime();
+        setInterval(this.updateDateTime, 1000);
+        this.populateClassFilter();
+        this.populateDashboardStats();
+        this.renderStudents();
+        this.renderNotices();
+        this.renderSharedNotes();
+        this.renderTimetable();
+        this.loadAttendanceData();
+        this.elements.facultyNameDisplay.textContent = this.data.facultyName;
+      },
+
+      bindEvents: function() {
+        this.elements.addStudentForm.addEventListener('submit', this.handleAddStudent.bind(this));
+        this.elements.accountSettingsForm.addEventListener('submit', this.handleSaveSettings.bind(this));
+        this.elements.classForm.addEventListener('submit', this.handleSaveClass.bind(this));
+        
+        // Notes file upload event listeners
+        if (this.elements.notesForm.pdf) {
+          this.elements.notesForm.pdf.addEventListener('change', (e) => {
+            console.log('PDF file selected:', e.target.files);
+            this.handleFileUpload(e.target, 'pdf');
+          });
+        }
+        if (this.elements.notesForm.images) {
+          this.elements.notesForm.images.addEventListener('change', (e) => {
+            console.log('Image files selected:', e.target.files);
+            this.handleFileUpload(e.target, 'image');
+          });
+        }
+        
+        // Drag and drop for notice image
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('dragover', (e) => e.preventDefault());
+        uploadArea.addEventListener('drop', (e) => {
+          e.preventDefault();
+          this.elements.noticeForm.image.files = e.dataTransfer.files;
+          this.showNotification('Image selected successfully!', 'success');
+        });
+        uploadArea.addEventListener('click', () => this.elements.noticeForm.image.click());
+      },
+      
+      // --- Core Functions ---
+      switchPage: function(pageId, navItem) {
+        this.elements.pages.forEach(page => page.classList.remove('active'));
+        this.elements.navItems.forEach(item => item.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        navItem.classList.add('active');
+        this.addRecentActivity(`Mapsd to ${pageId.charAt(0).toUpperCase() + pageId.slice(1)} page.`);
+        
+        if (pageId === 'attendance') {
+          this.loadAttendanceData();
+        } else if (pageId === 'reports') {
+          this.elements.reportSummary.innerHTML = '<p class="text-muted">Generate a report to see the summary here.</p>';
+        } else if (pageId === 'students') {
+          this.renderStudents();
+        }
+      },
+
+      updateDateTime: function() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+      },
+
+      // --- Dashboard Functions ---
+      populateDashboardStats: function() {
+        this.elements.dashboardStats.totalStudents.textContent = this.data.allStudents.length;
+        const today = new Date().toISOString().split('T')[0];
+        const todayAttendance = this.data.attendanceRecords[today] || {};
+        const attendanceCount = Object.values(todayAttendance).reduce((acc, status) => {
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {});
+        
+        this.elements.dashboardStats.presentToday.textContent = attendanceCount.present || 0;
+        this.elements.dashboardStats.absentToday.textContent = attendanceCount.absent || 0;
+        this.elements.dashboardStats.lateToday.textContent = attendanceCount.late || 0;
+        
+        const totalMarked = (attendanceCount.present || 0) + (attendanceCount.absent || 0) + (attendanceCount.late || 0);
+        const attendanceRate = totalMarked > 0 ? ((attendanceCount.present || 0) / totalMarked) * 100 : 0;
+        this.elements.dashboardStats.attendanceRate.textContent = `${attendanceRate.toFixed(1)}%`;
+      },
+
+      addRecentActivity: function(activity) {
+        const timestamp = new Date().toLocaleString();
+        this.data.recentActivity.unshift({ message: activity, timestamp: timestamp });
+        if (this.data.recentActivity.length > 5) {
+          this.data.recentActivity.pop();
+        }
+        localStorage.setItem('recentActivity', JSON.stringify(this.data.recentActivity));
+        this.renderRecentActivity();
+      },
+      
+      renderRecentActivity: function() {
+        const container = document.getElementById('recentActivity');
+        if (this.data.recentActivity.length === 0) {
+          container.innerHTML = '<p class="text-muted">No recent activity</p>';
+          return;
+        }
+        container.innerHTML = this.data.recentActivity.map(activity => `
+          <div style="border-bottom: 1px solid var(--border-color); padding: 0.5rem 0;">
+            <p>${activity.message}</p>
+            <small class="text-muted">${activity.timestamp}</small>
+          </div>
+        `).join('');
+      },
+
+      // --- Student Functions ---
+      handleAddStudent: function(event) {
+        event.preventDefault();
+        const name = event.target.studentName.value;
+        const roll = event.target.studentRoll.value;
+        const studentClass = event.target.studentClass.value;
+        
+        if (this.data.allStudents.some(s => s.roll === roll)) {
+          this.showNotification('Error: Student with this Roll No. already exists.', 'error');
+          return;
+        }
+        
+        const newStudent = { id: Date.now(), name: name, roll: roll, class: studentClass };
+        this.data.allStudents.push(newStudent);
+        localStorage.setItem('allStudents', JSON.stringify(this.data.allStudents));
+        this.renderStudents();
+        this.populateClassFilter();
+        this.showNotification('Student added successfully!', 'success');
+        event.target.reset();
+        this.addRecentActivity(`Added new student: ${name} (${roll})`);
+      },
+
+      renderStudents: function() {
+        const tbody = this.elements.studentTableBody;
+        tbody.innerHTML = '';
+        this.data.allStudents.sort((a, b) => a.roll.localeCompare(b.roll)).forEach(student => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${student.roll}</td>
+            <td>${student.name}</td>
+            <td>${student.class}</td>
+            <td class="action-buttons">
+              <button class="btn btn-danger" onclick="App.deleteStudent(${student.id})"><i class="fas fa-trash"></i></button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      },
+
+      deleteStudent: function(id) {
+        const student = this.data.allStudents.find(s => s.id === id);
+        if (confirm(`Are you sure you want to delete student ${student.name} (${student.roll})?`)) {
+          this.data.allStudents = this.data.allStudents.filter(s => s.id !== id);
+          localStorage.setItem('allStudents', JSON.stringify(this.data.allStudents));
+          this.renderStudents();
+          this.populateClassFilter();
+          this.showNotification('Student deleted successfully!', 'success');
+          this.addRecentActivity(`Deleted student: ${student.name} (${student.roll})`);
+        }
+      },
+
+      addBulkStudents: function() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const importedStudents = JSON.parse(e.target.result);
+                if (!Array.isArray(importedStudents) || importedStudents.some(s => !s.name || !s.roll || !s.class)) {
+                  throw new Error('Invalid file format. Expected an array of student objects.');
+                }
+                const newStudents = importedStudents.filter(s => !this.data.allStudents.some(es => es.roll === s.roll));
+                this.data.allStudents = [...this.data.allStudents, ...newStudents];
+                localStorage.setItem('allStudents', JSON.stringify(this.data.allStudents));
+                this.renderStudents();
+                this.populateClassFilter();
+                this.showNotification(`${newStudents.length} new students added successfully!`, 'success');
+                this.addRecentActivity(`Added ${newStudents.length} students via bulk upload.`);
+              } catch (error) {
+                this.showNotification(`Error importing data: ${error.message}`, 'error');
+              }
+            };
+            reader.readAsText(file);
+          }
+        };
+        input.click();
+      },
+
+      // --- Attendance Functions ---
+      populateClassFilter: function() {
+        const select = this.elements.attendanceClassFilter;
+        select.innerHTML = '<option value="all">All Classes</option>';
+        const classes = [...new Set(this.data.allStudents.map(s => s.class))];
+        classes.forEach(cls => {
+          const option = document.createElement('option');
+          option.value = cls;
+          option.textContent = cls;
+          select.appendChild(option);
+        });
+      },
+
+      loadAttendanceData: function() {
+        const date = this.elements.attendanceDate.value || new Date().toISOString().split('T')[0];
+        this.elements.attendanceDate.value = date;
+        const selectedClass = this.elements.attendanceClassFilter.value;
+        const attendance = this.data.attendanceRecords[date] || {};
+        
+        const studentsToDisplay = selectedClass === 'all' ? this.data.allStudents : this.data.allStudents.filter(s => s.class === selectedClass);
+        
+        const tbody = this.elements.attendanceTableBody;
+        tbody.innerHTML = '';
+        
+        studentsToDisplay.sort((a, b) => a.roll.localeCompare(b.roll)).forEach(student => {
+          const status = attendance[student.roll] || 'absent';
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${student.roll}</td>
+            <td>${student.name}</td>
+            <td>${student.class}</td>
+            <td>
+              <select class="status-select ${status}" onchange="App.setAttendanceStatus('${date}', '${student.roll}', this.value)">
+                <option value="present" ${status === 'present' ? 'selected' : ''}>Present</option>
+                <option value="absent" ${status === 'absent' ? 'selected' : ''}>Absent</option>
+                <option value="late" ${status === 'late' ? 'selected' : ''}>Late</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn btn-primary btn-sm" onclick="App.setAttendanceStatus('${date}', '${student.roll}', 'present')"><i class="fas fa-check"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="App.setAttendanceStatus('${date}', '${student.roll}', 'absent')"><i class="fas fa-times"></i></button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+        this.addRecentActivity(`Attendance loaded for ${date}.`);
+        this.populateDashboardStats();
+      },
+      
+      setAttendanceStatus: function(date, roll, status) {
+        if (!this.data.attendanceRecords[date]) {
+          this.data.attendanceRecords[date] = {};
+        }
+        this.data.attendanceRecords[date][roll] = status;
+        this.saveAttendance();
+      },
+
+      markAll: function(status) {
+        const date = this.elements.attendanceDate.value || new Date().toISOString().split('T')[0];
+        const studentsToMark = this.data.allStudents.filter(s => {
+          const selectedClass = this.elements.attendanceClassFilter.value;
+          return selectedClass === 'all' || s.class === selectedClass;
+        });
+        
+        if (!this.data.attendanceRecords[date]) {
+          this.data.attendanceRecords[date] = {};
+        }
+
+        studentsToMark.forEach(student => {
+          this.data.attendanceRecords[date][student.roll] = status;
+        });
+
+        this.saveAttendance();
+        this.showNotification(`All students marked as '${status}'.`, 'info');
+      },
+
+      saveAttendance: function() {
+        localStorage.setItem('attendanceRecords', JSON.stringify(this.data.attendanceRecords));
+        this.loadAttendanceData();
+        this.showNotification('Attendance saved successfully!', 'success');
+        this.addRecentActivity('Attendance for today was saved.');
+      },
+      
+      filterAttendanceTable: function() {
+        const searchTerm = this.elements.studentSearchAttendance.value.toLowerCase();
+        const rows = this.elements.attendanceTableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+          const name = row.cells[1].textContent.toLowerCase();
+          const roll = row.cells[0].textContent.toLowerCase();
+          if (name.includes(searchTerm) || roll.includes(searchTerm)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      },
+
+      // --- Timetable Functions ---
+      renderTimetable: function() {
+        const timetableGrid = this.elements.timetableGrid;
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const slots = Array.from({ length: 6 }, (_, i) => `Slot ${i + 1}`);
+
+        // Generate time headers (simple for demo)
+        slots.forEach(slot => {
+          const timeHeader = document.createElement('div');
+          timeHeader.className = 'timetable-header';
+          timeHeader.textContent = slot;
+          timetableGrid.appendChild(timeHeader);
+
+          days.forEach(day => {
+            const cell = document.createElement('div');
+            cell.className = 'timetable-cell';
+            const daySlot = `${day}-${slot}`;
+            const classData = this.data.timetable[daySlot];
+            if (classData) {
+              cell.innerHTML = `
+                <div class="timetable-subject">${classData.subject}</div>
+                <div>${classData.time}</div>
+                <small class="text-muted">${classData.teacher}</small>
+              `;
+            } else {
+              cell.classList.add('empty');
+              cell.textContent = 'Empty';
+            }
+            cell.onclick = () => this.openClassModal(classData, day, slot);
+            timetableGrid.appendChild(cell);
+          });
+        });
+      },
+      
+      openClassModal: function(classData, day, slot) {
+        const modal = this.elements.classModal;
+        const form = this.elements.classForm;
+        const subjectInput = form.querySelector('#classSubject');
+        const teacherInput = form.querySelector('#classTeacher');
+        const timeInput = form.querySelector('#classTime');
+        const roomInput = form.querySelector('#classRoom');
+
+        if (classData) {
+          subjectInput.value = classData.subject;
+          teacherInput.value = classData.teacher;
+          timeInput.value = classData.time;
+          roomInput.value = classData.room;
+        } else {
+          form.reset();
+        }
+
+        form.dataset.day = day;
+        form.dataset.slot = slot;
+        modal.classList.add('active');
+      },
+
+      handleSaveClass: function(event) {
+        event.preventDefault();
+        const form = this.elements.classForm;
+        const day = form.dataset.day;
+        const slot = form.dataset.slot;
+
+        const newClass = {
+          subject: form.querySelector('#classSubject').value,
+          teacher: form.querySelector('#classTeacher').value,
+          time: form.querySelector('#classTime').value,
+          room: form.querySelector('#classRoom').value
+        };
+
+        const daySlot = `${day}-${slot}`;
+        this.data.timetable[daySlot] = newClass;
+        this.saveTimetable();
+        this.closeModal('classModal');
+      },
+
+      closeModal: function(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+      },
+
+      saveTimetable: function() {
+        localStorage.setItem('timetable', JSON.stringify(this.data.timetable));
+        this.showNotification('Timetable saved successfully!', 'success');
+        this.addRecentActivity('Timetable was updated.');
+        // Re-render the timetable grid
+        this.elements.timetableGrid.innerHTML = `
+          <div class="timetable-header">Time / Day</div>
+          <div class="timetable-header">Mon</div>
+          <div class="timetable-header">Tue</div>
+          <div class="timetable-header">Wed</div>
+          <div class="timetable-header">Thu</div>
+          <div class="timetable-header">Fri</div>
+          <div class="timetable-header">Sat</div>
+        `;
+        this.renderTimetable();
+      },
+
+      // --- Notice Board Functions ---
+      publishNotice: function() {
+        const form = this.elements.noticeForm;
+        if (!form.title.value) {
+          this.showNotification('Please add a notice title.', 'error');
+          return;
+        }
+        
+        const newNotice = {
+          id: Date.now(),
+          title: form.title.value,
+          content: form.content.value,
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString(),
+          image: null,
+          priority: (form.priority && form.priority.value) || 'medium',
+          targetClass: (form.targetClass && form.targetClass.value) || 'All Classes'
+        };
+        
+        if (form.image.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            newNotice.image = e.target.result;
+            this.data.notices.unshift(newNotice);
+            localStorage.setItem('notices', JSON.stringify(this.data.notices));
+            // Also save to a global shared storage for students to access
+            const globalNotices = JSON.parse(localStorage.getItem('globalNotices')) || [];
+            globalNotices.unshift(newNotice);
+            localStorage.setItem('globalNotices', JSON.stringify(globalNotices));
+            this.renderNotices();
+            this.showNotification('Notice published successfully!', 'success');
+            this.addRecentActivity(`Published new notice: ${newNotice.title}`);
+          };
+          reader.readAsDataURL(form.image.files[0]);
+        } else {
+          this.data.notices.unshift(newNotice);
+          localStorage.setItem('notices', JSON.stringify(this.data.notices));
+          // Also save to a global shared storage for students to access
+          const globalNotices = JSON.parse(localStorage.getItem('globalNotices')) || [];
+          globalNotices.unshift(newNotice);
+          localStorage.setItem('globalNotices', JSON.stringify(globalNotices));
+          this.renderNotices();
+          this.showNotification('Notice published successfully!', 'success');
+          this.addRecentActivity(`Published new notice: ${newNotice.title}`);
+        }
+        
+        // Reset form
+        form.title.value = '';
+        form.content.value = '';
+        form.image.value = null;
+        if (form.priority) form.priority.value = 'medium';
+        if (form.targetClass) form.targetClass.value = 'All Classes';
+      },
+
+      renderNotices: function() {
+        const noticesList = this.elements.noticesList;
+        if (this.data.notices.length === 0) {
+          noticesList.innerHTML = '<p class="text-muted">No notices published yet.</p>';
+          return;
+        }
+        noticesList.innerHTML = this.data.notices.map(notice => `
+          <div class="notice-card fade-in">
+            <div class="notice-header">
+              <h4 style="color:white; font-weight:600;">${notice.title}</h4>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span class="notice-priority ${notice.priority || 'medium'}">${(notice.priority || 'medium').toUpperCase()}</span>
+                <span class="notice-priority low" style="background: rgba(59,130,246,0.2); color:#3b82f6;">${notice.targetClass || 'All Classes'}</span>
+                <button class="btn btn-danger" onclick="App.deleteNotice(${notice.id})"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+            <div class="notice-body">
+              <p>${notice.content}</p>
+              ${notice.image ? `<img src="${notice.image}" alt="Notice Image" style="max-width:100%; margin-top:1rem; border-radius:8px;">` : ''}
+              <div class="notice-meta">
+                <span>Published on: ${notice.date} at ${notice.time}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      deleteNotice: function(id) {
+        const notice = this.data.notices.find(n => n.id === id);
+        if (confirm(`Are you sure you want to delete the notice "${notice.title}"?`)) {
+          this.data.notices = this.data.notices.filter(n => n.id !== id);
+          localStorage.setItem('notices', JSON.stringify(this.data.notices));
+          // Also remove from global shared storage
+          const globalNotices = JSON.parse(localStorage.getItem('globalNotices')) || [];
+          const updatedGlobalNotices = globalNotices.filter(n => n.id !== id);
+          localStorage.setItem('globalNotices', JSON.stringify(updatedGlobalNotices));
+          this.renderNotices();
+          this.showNotification('Notice deleted successfully!', 'success');
+          this.addRecentActivity(`Deleted notice: ${notice.title}`);
+        }
+      },
+
+      // --- Notes Functions ---
+      currentNoteFiles: [], // Store files for current note
+
+      handleFileUpload: function(input, type) {
+        try {
+          console.log('handleFileUpload called with:', input, type);
+          const files = Array.from(input.files);
+          console.log('Files to process:', files);
+          
+          if (files.length === 0) {
+            console.log('No files selected');
+            return;
+          }
+          
+          files.forEach(file => {
+            console.log('Processing file:', file.name, file.type, file.size);
+            
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+              this.showNotification(`File ${file.name} is too large. Maximum size is 10MB`, 'warning');
+              return;
+            }
+            
+            const fileObj = {
+              id: Date.now() + Math.random(),
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              file: file
+            };
+            
+            this.currentNoteFiles.push(fileObj);
+            this.showFilePreview(fileObj);
+            console.log('File added to currentNoteFiles:', fileObj);
+          });
+          
+          this.showNotification(`Added ${files.length} file(s) to note`, 'success');
+        } catch (error) {
+          console.error('Error handling file upload:', error);
+          this.showNotification('Error uploading file(s)', 'error');
+        }
+      },
+
+      showFilePreview: function(fileObj) {
+        console.log('showFilePreview called with:', fileObj);
+        const preview = this.elements.facultyFilePreview;
+        if (!preview) {
+          console.error('facultyFilePreview element not found');
+          return;
+        }
+        
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.dataset.fileId = fileObj.id;
+        
+        if (fileObj.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            fileItem.innerHTML = `
+              <img src="${e.target.result}" alt="${fileObj.name}">
+              <div class="file-info">
+                <div class="file-name">${fileObj.name}</div>
+                <div class="file-size">${this.formatFileSize(fileObj.size)}</div>
+              </div>
+              <button class="remove-file" onclick="App.removeFile(${fileObj.id})">×</button>
+            `;
+          }.bind(this);
+          reader.readAsDataURL(fileObj.file);
+        } else {
+          // For PDFs and other files
+          const fileIcon = fileObj.type.includes('pdf') ? 'fas fa-file-pdf' : 'fas fa-file';
+          fileItem.innerHTML = `
+            <div class="file-info" style="text-align: center; padding: 20px;">
+              <i class="${fileIcon}" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 10px;"></i>
+              <div class="file-name">${fileObj.name}</div>
+              <div class="file-size">${this.formatFileSize(fileObj.size)}</div>
+            </div>
+            <button class="remove-file" onclick="App.removeFile(${fileObj.id})">×</button>
+          `;
+        }
+        
+        preview.appendChild(fileItem);
+        console.log('File preview added to DOM');
+      },
+
+      removeFile: function(fileId) {
+        this.currentNoteFiles = this.currentNoteFiles.filter(f => f.id !== fileId);
+        const fileItem = this.elements.facultyFilePreview.querySelector(`[data-file-id="${fileId}"]`);
+        if (fileItem) {
+          fileItem.remove();
+        }
+      },
+
+      formatFileSize: function(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      },
+
+      createNote: function() {
+        console.log('createNote called');
+        const form = this.elements.notesForm;
+        const title = form.title.value.trim();
+        const subject = form.subject.value;
+        const targetClass = form.class.value;
+        const content = form.content.value.trim();
+        
+        console.log('Form values:', { title, subject, targetClass, content });
+        console.log('Current files:', this.currentNoteFiles);
+        
+        if (!title || !subject || !targetClass || !content) {
+          this.showNotification('Please fill in all required fields.', 'error');
+          return;
+        }
+        
+        // Process files and convert to base64 for storage
+        const attachments = [];
+        if (this.currentNoteFiles.length > 0) {
+          console.log('Processing', this.currentNoteFiles.length, 'files');
+          let processedFiles = 0;
+          let hasError = false;
+          
+          this.currentNoteFiles.forEach(fileObj => {
+            console.log('Processing file:', fileObj.name, 'Type:', fileObj.type, 'Size:', fileObj.size);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              console.log('File read successfully:', fileObj.name, 'Data length:', e.target.result.length);
+              const attachment = {
+                id: fileObj.id,
+                name: fileObj.name,
+                size: fileObj.size,
+                type: fileObj.type,
+                data: e.target.result
+              };
+              attachments.push(attachment);
+              console.log('Attachment added:', attachment);
+              
+              processedFiles++;
+              console.log(`Processed ${processedFiles}/${this.currentNoteFiles.length} files`);
+              if (processedFiles === this.currentNoteFiles.length && !hasError) {
+                console.log('All files processed, saving note with attachments:', attachments);
+                this.saveNoteWithAttachments(title, subject, targetClass, content, attachments);
+              }
+            }.bind(this);
+            reader.onerror = function(e) {
+              console.error('Error reading file:', fileObj.name, e);
+              hasError = true;
+              this.showNotification(`Error reading file: ${fileObj.name}`, 'error');
+            }.bind(this);
+            reader.readAsDataURL(fileObj.file);
+          });
+        } else {
+          console.log('No files to process, saving note without attachments');
+          this.saveNoteWithAttachments(title, subject, targetClass, content, []);
+        }
+      },
+
+      saveNoteWithAttachments: function(title, subject, targetClass, content, attachments) {
+        console.log('saveNoteWithAttachments called with:', { title, subject, targetClass, content, attachments });
+        
+        const note = {
+          id: Date.now(),
+          title: title,
+          subject: subject,
+          targetClass: targetClass,
+          content: content,
+          attachments: attachments,
+          facultyName: this.data.facultyName,
+          timestamp: new Date().toISOString(),
+          shared: true
+        };
+        
+        console.log('Note object created:', note);
+        
+        this.data.sharedNotes.unshift(note);
+        localStorage.setItem('sharedNotes', JSON.stringify(this.data.sharedNotes));
+        console.log('Note saved to sharedNotes');
+        
+        // Also save to a global shared notes storage for students to access
+        const globalNotes = JSON.parse(localStorage.getItem('globalSharedNotes')) || [];
+        globalNotes.unshift(note);
+        localStorage.setItem('globalSharedNotes', JSON.stringify(globalNotes));
+        console.log('Note saved to globalSharedNotes');
+        
+        this.renderSharedNotes();
+        this.clearNoteForm();
+        this.showNotification(`Note created and shared successfully! ${attachments.length > 0 ? `(${attachments.length} file(s) attached)` : ''}`, 'success');
+        this.addRecentActivity(`Created and shared study note: ${title} for ${targetClass} ${attachments.length > 0 ? `with ${attachments.length} attachment(s)` : ''}`);
+      },
+
+      renderSharedNotes: function() {
+        const notesList = this.elements.facultyNotesList;
+        if (this.data.sharedNotes.length === 0) {
+          notesList.innerHTML = '<p class="text-muted">No notes shared yet.</p>';
+          return;
+        }
+        
+        notesList.innerHTML = this.data.sharedNotes.map(note => {
+          let attachmentsHtml = '';
+          if (note.attachments && note.attachments.length > 0) {
+            attachmentsHtml = `
+              <div class="note-attachments">
+                <h6><i class="fas fa-paperclip me-2"></i>Attachments (${note.attachments.length})</h6>
+                ${note.attachments.map(attachment => {
+                  if (attachment.type.startsWith('image/')) {
+                    return `
+                      <div class="attachment-item">
+                        <div class="attachment-icon">
+                          <i class="fas fa-image"></i>
+                        </div>
+                        <div class="attachment-info">
+                          <div class="attachment-name">${attachment.name}</div>
+                          <div class="attachment-size">${this.formatFileSize(attachment.size)}</div>
+                        </div>
+                        <div class="attachment-actions">
+                          <button class="btn btn-sm btn-outline-primary" onclick="App.viewImage('${attachment.data}', '${attachment.name}')">
+                            <i class="fas fa-eye"></i> View
+                          </button>
+                          <button class="btn btn-sm btn-outline-primary" onclick="App.downloadFile('${attachment.data}', '${attachment.name}')">
+                            <i class="fas fa-download"></i> Download
+                          </button>
+                        </div>
+                      </div>
+                    `;
+                  } else {
+                    return `
+                      <div class="attachment-item">
+                        <div class="attachment-icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="attachment-info">
+                          <div class="attachment-name">${attachment.name}</div>
+                          <div class="attachment-size">${this.formatFileSize(attachment.size)}</div>
+                        </div>
+                        <div class="attachment-actions">
+                          <button class="btn btn-sm btn-outline-primary" onclick="App.downloadFile('${attachment.data}', '${attachment.name}')">
+                            <i class="fas fa-download"></i> Download
+                          </button>
+                        </div>
+                      </div>
+                    `;
+                  }
+                }).join('')}
+              </div>
+            `;
+          }
+          
+          return `
+            <div class="note-card fade-in">
+              <div class="note-header">
+                <h4>${note.title}</h4>
+                <button class="btn btn-danger btn-sm" onclick="App.deleteNote(${note.id})">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+              <div class="note-meta">
+                <span><i class="fas fa-book"></i> ${note.subject}</span>
+                <span><i class="fas fa-users"></i> ${note.targetClass}</span>
+                <span><i class="fas fa-clock"></i> ${new Date(note.timestamp).toLocaleDateString()}</span>
+              </div>
+              <div class="note-content">${note.content}</div>
+              ${attachmentsHtml}
+            </div>
+          `;
+        }).join('');
+      },
+
+      deleteNote: function(id) {
+        const note = this.data.sharedNotes.find(n => n.id === id);
+        if (confirm(`Are you sure you want to delete the note "${note.title}"?`)) {
+          this.data.sharedNotes = this.data.sharedNotes.filter(n => n.id !== id);
+          localStorage.setItem('sharedNotes', JSON.stringify(this.data.sharedNotes));
+          
+          // Also remove from global shared notes
+          const globalNotes = JSON.parse(localStorage.getItem('globalSharedNotes')) || [];
+          const updatedGlobalNotes = globalNotes.filter(n => n.id !== id);
+          localStorage.setItem('globalSharedNotes', JSON.stringify(updatedGlobalNotes));
+          
+          this.renderSharedNotes();
+          this.showNotification('Note deleted successfully!', 'success');
+          this.addRecentActivity(`Deleted study note: ${note.title}`);
+        }
+      },
+
+      clearNoteForm: function() {
+        console.log('Clearing note form');
+        this.elements.notesForm.title.value = '';
+        this.elements.notesForm.subject.value = '';
+        this.elements.notesForm.class.value = '';
+        this.elements.notesForm.content.value = '';
+        if (this.elements.notesForm.pdf) this.elements.notesForm.pdf.value = '';
+        if (this.elements.notesForm.images) this.elements.notesForm.images.value = '';
+        if (this.elements.facultyFilePreview) this.elements.facultyFilePreview.innerHTML = '';
+        this.currentNoteFiles = [];
+        console.log('Note form cleared');
+      },
+
+      debugCurrentFiles: function() {
+        console.log('=== DEBUG CURRENT FILES ===');
+        console.log('currentNoteFiles:', this.currentNoteFiles);
+        console.log('currentNoteFiles length:', this.currentNoteFiles.length);
+        this.currentNoteFiles.forEach((file, index) => {
+          console.log(`File ${index + 1}:`, {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            id: file.id
+          });
+        });
+        console.log('=== END DEBUG ===');
+        this.showNotification(`Debug: ${this.currentNoteFiles.length} files selected`, 'info');
+      },
+
+      filterNotes: function() {
+        const subjectFilter = document.getElementById('filterSubject').value;
+        const classFilter = document.getElementById('filterClass').value;
+        
+        const filteredNotes = this.data.sharedNotes.filter(note => {
+          const subjectMatch = !subjectFilter || note.subject === subjectFilter;
+          const classMatch = !classFilter || note.targetClass === classFilter || note.targetClass === 'All Classes';
+          return subjectMatch && classMatch;
+        });
+        
+        this.renderFilteredNotes(filteredNotes);
+      },
+
+      renderFilteredNotes: function(filteredNotes) {
+        const notesList = this.elements.facultyNotesList;
+        if (filteredNotes.length === 0) {
+          notesList.innerHTML = '<p class="text-muted">No notes found with the selected filters.</p>';
+          return;
+        }
+        
+        // Reuse the same rendering logic but with filtered data
+        this.renderSharedNotes();
+      },
+
+      viewImage: function(imageData, fileName) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-custom';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+          <div class="modal-content-custom" style="max-width: 90vw; max-height: 90vh;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5>${fileName}</h5>
+              <button class="btn btn-sm btn-outline-primary" onclick="this.closest('.modal-custom').remove()">×</button>
+            </div>
+            <img src="${imageData}" alt="${fileName}" style="max-width: 100%; max-height: 70vh; object-fit: contain;">
+          </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            modal.remove();
+          }
+        });
+      },
+
+      downloadFile: function(fileData, fileName) {
+        const link = document.createElement('a');
+        link.href = fileData;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      },
+
+      // --- Reports & Analytics Functions ---
+      generateReport: function() {
+        const form = this.elements.reportForm;
+        const selectedClass = form.reportClass.value;
+        const dateFrom = form.dateFrom.value;
+        const dateTo = form.dateTo.value;
+        
+        if (!dateFrom || !dateTo) {
+          this.showNotification('Please select a valid date range.', 'error');
+          return;
+        }
+
+        const filteredStudents = selectedClass === 'all' ? this.data.allStudents : this.data.allStudents.filter(s => s.class === selectedClass);
+        const reportData = filteredStudents.map(student => {
+          let presentCount = 0;
+          let absentCount = 0;
+          let lateCount = 0;
+          let totalClasses = 0;
+
+          for (const date in this.data.attendanceRecords) {
+            if (date >= dateFrom && date <= dateTo) {
+              const status = this.data.attendanceRecords[date][student.roll];
+              if (status) {
+                totalClasses++;
+                if (status === 'present') presentCount++;
+                if (status === 'absent') absentCount++;
+                if (status === 'late') lateCount++;
+              }
+            }
+          }
+          const attendancePercentage = totalClasses > 0 ? ((presentCount + lateCount) / totalClasses) * 100 : 0;
+          return {
+            name: student.name,
+            roll: student.roll,
+            class: student.class,
+            present: presentCount,
+            absent: absentCount,
+            late: lateCount,
+            percentage: attendancePercentage.toFixed(1) + '%'
+          };
+        });
+
+        this.renderReport(reportData, dateFrom, dateTo, selectedClass);
+        this.addRecentActivity(`Generated an attendance report for ${selectedClass} from ${dateFrom} to ${dateTo}.`);
+      },
+
+      renderReport: function(reportData, dateFrom, dateTo, selectedClass) {
+        const summary = this.elements.reportSummary;
+        let tableHTML = `
+          <h4>Attendance Report for ${selectedClass === 'all' ? 'All Classes' : selectedClass}</h4>
+          <p>From: ${dateFrom} To: ${dateTo}</p>
+          <div class="table-container" style="margin-top: 1rem;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Roll No.</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Present</th>
+                  <th>Absent</th>
+                  <th>Late</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+        
+        reportData.forEach(student => {
+          tableHTML += `
+            <tr>
+              <td>${student.roll}</td>
+              <td>${student.name}</td>
+              <td>${student.class}</td>
+              <td>${student.present}</td>
+              <td>${student.absent}</td>
+              <td>${student.late}</td>
+              <td>${student.percentage}</td>
+            </tr>
+          `;
+        });
+        
+        tableHTML += '</tbody></table></div>';
+        summary.innerHTML = tableHTML;
+      },
+
+      // --- Settings & Data Management ---
+      handleSaveSettings: function(event) {
+        event.preventDefault();
+        const newFacultyName = this.elements.facultyNameInput.value;
+        this.data.facultyName = newFacultyName;
+        localStorage.setItem('facultyName', newFacultyName);
+        this.elements.facultyNameDisplay.textContent = newFacultyName;
+        this.showNotification('Settings saved successfully!', 'success');
+        this.addRecentActivity('Account settings were updated.');
+      },
+
+      backupData: function() {
+        const dataToBackup = {
+          allStudents: this.data.allStudents,
+          notices: this.data.notices,
+          attendanceRecords: this.data.attendanceRecords,
+          timetable: this.data.timetable,
+          facultyName: this.data.facultyName
+        };
+        const blob = new Blob([JSON.stringify(dataToBackup, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `AttendPro_backup_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.showNotification('Data backup created successfully!', 'success');
+        this.addRecentActivity('Application data was backed up.');
+      },
+
+      restoreData: function() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const importedData = JSON.parse(e.target.result);
+                if (importedData.allStudents && importedData.notices && importedData.attendanceRecords) {
+                  this.data.allStudents = importedData.allStudents;
+                  this.data.notices = importedData.notices;
+                  this.data.attendanceRecords = importedData.attendanceRecords;
+                  this.data.timetable = importedData.timetable || {};
+                  this.data.facultyName = importedData.facultyName || 'Dr. Faculty';
+                  
+                  localStorage.setItem('allStudents', JSON.stringify(this.data.allStudents));
+                  localStorage.setItem('notices', JSON.stringify(this.data.notices));
+                  localStorage.setItem('attendanceRecords', JSON.stringify(this.data.attendanceRecords));
+                  localStorage.setItem('timetable', JSON.stringify(this.data.timetable));
+                  localStorage.setItem('facultyName', this.data.facultyName);
+
+                  this.init(); // Re-initialize UI
+                  this.showNotification('Data restored successfully!', 'success');
+                  this.addRecentActivity('Application data was restored from a backup file.');
+                } else {
+                  throw new Error('Invalid file format.');
+                }
+              } catch (error) {
+                this.showNotification('Error restoring data: Invalid file format.', 'error');
+              }
+            };
+            reader.readAsText(file);
+          }
+        };
+        input.click();
+      },
+
+      clearAllData: function() {
+        if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+            localStorage.clear();
+            this.data.allStudents = [];
+            this.data.notices = [];
+            this.data.attendanceRecords = {};
+            this.data.timetable = {};
+            this.data.recentActivity = [];
+            this.init();
+            this.showNotification('All data has been cleared.', 'success');
+        }
+      },
+
+      logout: function() {
+        this.showNotification('Logged out successfully!', 'info');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      },
+
+      // --- Utilities ---
+      showNotification: function(message, type) {
+        const notification = this.elements.notification;
+        notification.textContent = message;
+        notification.className = `notification show ${type}`;
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 4000);
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      App.init();
+    });
+  </script>
+</body>
+</html>
