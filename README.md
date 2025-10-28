@@ -2,25 +2,17 @@
 
 A comprehensive student management system with real-time features, built with Java Spring Boot backend and modern HTML/CSS/JavaScript frontend.
 
-## ✨ Features
+## 🌟 Key Features
 
-### 🎯 Student Dashboard
 - **Real-time Attendance Tracking** - Live updates when faculty marks attendance
-- **Academic Performance** - Grades, subjects, and overall performance
-- **Class Schedule** - Weekly timetable with room and instructor details
+- **Academic Performance Dashboard** - Grades, subjects, and overall performance
+- **Class Schedule Management** - Weekly timetable with room and instructor details
 - **Notice Board** - Real-time notices from admin and faculty
-- **Study Notes** - Personal note-taking with CRUD operations
-- **Faculty Notes** - Shared study materials from faculty
+- **Study Notes System** - Personal note-taking with CRUD operations
+- **Faculty Notes Sharing** - Shared study materials from faculty
 - **Pomodoro Timer** - Study session timer with gamification
 - **Analytics Dashboard** - Study time distribution and progress tracking
-- **Achievements System** - Points, levels, and achievement badges
-
-### 🔧 Technical Features
-- **Real-time Updates** - Automatic data synchronization
-- **Mobile Responsive** - Optimized for all devices
-- **Error Handling** - Comprehensive error management
-- **API Integration** - RESTful APIs for all operations
-- **Modern UI/UX** - Beautiful and intuitive interface
+- **Achievement System** - Points, levels, and achievement badges
 
 ## 🚀 Tech Stack
 
@@ -81,7 +73,7 @@ AttendPro/
 ### Backend Setup
 1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/AttendPro.git
+git clone https://github.com/Prathamsingh2005/AttendPro.git
 cd AttendPro
 ```
 
@@ -167,7 +159,6 @@ mvn spring-boot:run
 
 - **Modern Design**: Clean and professional interface
 - **Responsive Layout**: Works on desktop, tablet, and mobile
-- **Dark/Light Theme**: Customizable color schemes
 - **Interactive Elements**: Smooth animations and transitions
 - **Accessibility**: Screen reader friendly
 - **Mobile-First**: Optimized for mobile devices
@@ -185,7 +176,6 @@ mvn spring-boot:run
 - **Lazy Loading**: Load data on demand
 - **Caching**: Client-side data caching
 - **Compression**: Optimized file sizes
-- **CDN**: Fast content delivery
 - **Database Indexing**: Optimized queries
 
 ## 🤝 Contributing
@@ -202,7 +192,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
+- **Pratham Singh** - *Initial work* - [Prathamsingh2005](https://github.com/Prathamsingh2005)
+  - Email: prathamgaur2005@gmail.com
+  - GitHub: https://github.com/Prathamsingh2005
 
 ## 🙏 Acknowledgments
 
@@ -215,8 +207,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 - Open an issue on GitHub
-- Contact: your.email@example.com
-- Documentation: [Project Wiki](https://github.com/YOUR_USERNAME/AttendPro/wiki)
+- Contact: prathamgaur2005@gmail.com
+- Documentation: [Project Wiki](https://github.com/Prathamsingh2005/AttendPro/wiki)
 
 ---
 

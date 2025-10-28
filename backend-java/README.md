@@ -1,6 +1,6 @@
 # AttendPro Java Backend
 
-यह AttendPro system का Java Spring Boot backend है जो PHP backend को replace करता है।
+This is the Java Spring Boot backend for the AttendPro system that replaces the PHP backend.
 
 ## Features
 
