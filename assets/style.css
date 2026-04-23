@@ -1,0 +1,124 @@
+/* =================== */
+/* Basic Styles for AttendPro */
+/* =================== */
+
+/* Reset & body */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f6f8fa;
+  color: #24292e;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+body.dark {
+  background-color: #121212;
+  color: #eaeaea;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  color: inherit;
+}
+p {
+  line-height: 1.5;
+}
+
+/* Container and cards */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.card {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.1);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.3s ease;
+}
+body.dark .card {
+  background-color: #1e1e1e;
+}
+
+/* Buttons */
+.btn {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 12px;
+  padding: 0.6rem 1.4rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-position 0.3s ease;
+}
+.btn:hover {
+  background-position: right center;
+  box-shadow: 0 6px 20px rgba(118, 75, 162, 0.3);
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+/* Error text */
+.error {
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+/* Circular progress container example */
+.progress-circle {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1rem;
+}
+
+/* Simple animations */
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #667eea;
+  border-radius: 10px;
+}
+
+/* Misc */
+.text-center {
+  text-align: center;
+}
+.mt-1 {
+  margin-top: 0.4rem;
+}
+.mb-1 {
+  margin-bottom: 0.4rem;
+}

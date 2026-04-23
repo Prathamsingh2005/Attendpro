@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AttendPro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+            --secondary-gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            
+            --primary-color: #3b82f6;
+            --secondary-color: #6366f1;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-color: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .datetime {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: var(--shadow-md);
+            padding: 2rem 0;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--light-color);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.primary { background: var(--primary-gradient); color: white; }
+        .stat-icon.success { background: var(--success-gradient); color: white; }
+        .stat-icon.warning { background: var(--warning-gradient); color: white; }
+        .stat-icon.danger { background: var(--danger-gradient); color: white; }
+        .stat-icon.info { background: var(--accent-gradient); color: white; }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .stat-change.positive { color: var(--success-color); }
+        .stat-change.negative { color: var(--danger-color); }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table th {
+            background: var(--light-color);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table tbody tr:hover {
+            background: var(--light-color);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 3000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: var(--success-color); }
+        .notification.error { background: var(--danger-color); }
+        .notification.warning { background: var(--warning-color); }
+        .notification.info { background: var(--accent-color); }
+
+        /* Charts Container */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                z-index: 999;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <img src="../assets/logo.svg" alt="AttendPro" height="40" decoding="async">
+                    <span>AttendPro Admin</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <i class="fas fa-user-shield"></i>
+                    <span id="adminName">Super Admin</span>
+                </div>
+                <div class="datetime" id="currentDateTime"></div>
+                <button class="header-btn logout" onclick="AdminApp.logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <nav>
+                <a href="#" class="nav-item active" onclick="AdminApp.switchPage('dashboard', this)">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('users', this)">
+                    <i class="fas fa-users-cog"></i> User Management
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('faculty', this)">
+                    <i class="fas fa-chalkboard-teacher"></i> Faculty Management
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('students', this)">
+                    <i class="fas fa-graduation-cap"></i> Student Management
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('attendance', this)">
+                    <i class="fas fa-calendar-check"></i> Attendance Overview
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('notices', this)">
+                    <i class="fas fa-bullhorn"></i> Notice Management
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('reports', this)">
+                    <i class="fas fa-chart-line"></i> Reports & Analytics
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('settings', this)">
+                    <i class="fas fa-cogs"></i> System Settings
+                </a>
+                <a href="#" class="nav-item" onclick="AdminApp.switchPage('logs', this)">
+                    <i class="fas fa-history"></i> Activity Logs
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="page-section active">
+                <div class="page-header">
+                    <h1 class="page-title">Admin Dashboard</h1>
+                    <p class="page-subtitle">Complete system overview and controls</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>12% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-value" id="totalFaculty">0</div>
+                        <div class="stat-label">Total Faculty</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-value" id="totalStudents">0</div>
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>8% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon info">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-value" id="todayAttendance">0%</div>
+                        <div class="stat-label">Today's Attendance</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>3% from yesterday</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Attendance Trends</h3>
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3 class="chart-title">User Distribution</h3>
+                        <canvas id="userChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent System Activity</h3>
+                        <button class="btn btn-primary btn-sm" onclick="AdminApp.refreshActivity()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="recentActivity">
+                        <!-- Activity will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Management Section -->
+            <section id="users" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">User Management</h1>
+                    <p class="page-subtitle">Manage all system users and permissions</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Users</h3>
+                        <button class="btn btn-primary" onclick="AdminApp.showAddUserModal()">
+                            <i class="fas fa-plus"></i> Add User
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Faculty Management Section -->
+            <section id="faculty" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Faculty Management</h1>
+                    <p class="page-subtitle">Manage faculty accounts and assignments</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Faculty Members</h3>
+                        <button class="btn btn-primary" onclick="AdminApp.showAddFacultyModal()">
+                            <i class="fas fa-plus"></i> Add Faculty
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Classes</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="facultyTableBody">
+                                <!-- Faculty will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Student Management Section -->
+            <section id="students" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Student Management</h1>
+                    <p class="page-subtitle">Manage student records and enrollment</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Students</h3>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success" onclick="AdminApp.importStudents()">
+                                <i class="fas fa-file-import"></i> Import
+                            </button>
+                            <button class="btn btn-primary" onclick="AdminApp.showAddStudentModal()">
+                                <i class="fas fa-plus"></i> Add Student
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Roll No</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Class</th>
+                                    <th>Attendance</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <!-- Students will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance Overview Section -->
+            <section id="attendance" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Attendance Overview</h1>
+                    <p class="page-subtitle">System-wide attendance statistics and trends</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-value" id="avgAttendance">85%</div>
+                        <div class="stat-label">Average Attendance</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value" id="totalClasses">0</div>
+                        <div class="stat-label">Total Classes Today</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="fas fa-user-times"></i>
+                        </div>
+                        <div class="stat-value" id="absentToday">0</div>
+                        <div class="stat-label">Absent Today</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon info">
+                            <i class="fas fa-calendar-week"></i>
+                        </div>
+                        <div class="stat-value" id="weeklyAttendance">87%</div>
+                        <div class="stat-label">Weekly Average</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Weekly Attendance</h3>
+                        <canvas id="weeklyAttendanceChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3 class="chart-title">Class-wise Attendance</h3>
+                        <canvas id="classAttendanceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notice Management Section -->
+            <section id="notices" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Notice Management</h1>
+                    <p class="page-subtitle">Manage all system notices and announcements</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Notices</h3>
+                        <button class="btn btn-primary" onclick="AdminApp.showAddNoticeModal()">
+                            <i class="fas fa-plus"></i> Add Notice
+                        </button>
+                    </div>
+                    <div id="noticesList">
+                        <!-- Notices will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Reports & Analytics</h1>
+                    <p class="page-subtitle">Generate comprehensive reports and insights</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Generate Reports</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Report Type</label>
+                                <select class="form-control" id="reportType">
+                                    <option value="attendance">Attendance Report</option>
+                                    <option value="performance">Performance Report</option>
+                                    <option value="users">User Activity Report</option>
+                                    <option value="system">System Usage Report</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Date Range</label>
+                                <select class="form-control" id="dateRange">
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="year">This Year</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="AdminApp.generateReport()">
+                        <i class="fas fa-file-download"></i> Generate Report
+                    </button>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">System Usage Trends</h3>
+                        <canvas id="usageChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3 class="chart-title">Performance Metrics</h3>
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">System Settings</h1>
+                    <p class="page-subtitle">Configure system preferences and policies</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">General Settings</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">System Name</label>
+                                <input type="text" class="form-control" id="systemName" value="AttendPro">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Admin Email</label>
+                                <input type="email" class="form-control" id="adminEmail" value="admin@attendpro.com">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Default Attendance Time</label>
+                                <input type="time" class="form-control" id="defaultTime" value="09:00">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Session Duration (minutes)</label>
+                                <input type="number" class="form-control" id="sessionDuration" value="50">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="AdminApp.saveSettings()">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Data Management</h3>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success" onclick="AdminApp.backupData()">
+                            <i class="fas fa-download"></i> Backup Data
+                        </button>
+                        <button class="btn btn-warning" onclick="AdminApp.restoreData()">
+                            <i class="fas fa-upload"></i> Restore Data
+                        </button>
+                        <button class="btn btn-danger" onclick="AdminApp.clearAllData()">
+                            <i class="fas fa-trash"></i> Clear All Data
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity Logs Section -->
+            <section id="logs" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Activity Logs</h1>
+                    <p class="page-subtitle">View system activity and audit logs</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">System Logs</h3>
+                        <button class="btn btn-primary" onclick="AdminApp.refreshLogs()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                    <th>IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsTableBody">
+                                <!-- Logs will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <h3>Add New User</h3>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" id="newUserName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="newUserEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-control" id="newUserRole">
+                        <option value="faculty">Faculty</option>
+                        <option value="student">Student</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="newUserPassword" required>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                    <button type="button" class="btn btn-secondary" onclick="AdminApp.closeModal('addUserModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Authentication Check
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Admin Application
+        const AdminApp = {
+            // --- Data Storage ---
+            data: {
+                users: JSON.parse(localStorage.getItem('adminUsers')) || [],
+                faculty: JSON.parse(localStorage.getItem('facultyData')) || JSON.parse(localStorage.getItem('allStudents')) || [],
+                students: JSON.parse(localStorage.getItem('allStudents')) || [],
+                attendance: JSON.parse(localStorage.getItem('attendance')) || [],
+                notices: JSON.parse(localStorage.getItem('notices')) || [],
+                logs: JSON.parse(localStorage.getItem('activityLogs')) || [],
+                settings: JSON.parse(localStorage.getItem('systemSettings')) || {
+                    systemName: 'AttendPro',
+                    adminEmail: 'admin@attendpro.com',
+                    defaultTime: '09:00',
+                    sessionDuration: 50
+                }
+            },
+
+            // --- Initialization ---
+            init: function() {
+                // Check authentication first
+                if (!checkAuth()) return;
+                
+                // Initialize sample data if empty
+                this.initializeSampleData();
+                
+                this.updateDateTime();
+                setInterval(this.updateDateTime, 1000);
+                this.loadDashboardData();
+                this.loadUsers();
+                this.loadFaculty();
+                this.loadStudents();
+                this.loadAttendance();
+                this.loadNotices();
+                this.loadLogs();
+                this.initializeCharts();
+                this.bindEvents();
+            },
+
+            initializeSampleData: function() {
+                // Add sample faculty if empty
+                if (this.data.faculty.length === 0) {
+                    this.data.faculty = [
+                        { id: 'FAC001', name: 'Dr. John Smith', email: 'john@university.edu', department: 'Computer Science', class: 'CS-A' },
+                        { id: 'FAC002', name: 'Prof. Sarah Johnson', email: 'sarah@university.edu', department: 'Mathematics', class: 'Math-B' },
+                        { id: 'FAC003', name: 'Dr. Michael Brown', email: 'michael@university.edu', department: 'Physics', class: 'Phy-C' }
+                    ];
+                    localStorage.setItem('facultyData', JSON.stringify(this.data.faculty));
+                }
+
+                // Add sample logs if empty
+                if (this.data.logs.length === 0) {
+                    this.data.logs = [
+                        { user: 'admin', action: 'Logged in', details: 'Admin dashboard access', timestamp: new Date().toISOString(), ip: '127.0.0.1' },
+                        { user: 'Dr. John Smith', action: 'Marked attendance', details: 'CS-A class attendance', timestamp: new Date().toISOString(), ip: '127.0.0.1' },
+                        { user: 'admin', action: 'Added notice', details: 'New system notice published', timestamp: new Date().toISOString(), ip: '127.0.0.1' }
+                    ];
+                    localStorage.setItem('activityLogs', JSON.stringify(this.data.logs));
+                }
+            },
+
+            updateDateTime: function() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'short', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+            },
+
+            // --- Page Navigation ---
+            switchPage: function(pageName, navItem) {
+                // Hide all pages
+                document.querySelectorAll('.page-section').forEach(page => {
+                    page.classList.remove('active');
+                });
+
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Show selected page
+                document.getElementById(pageName).classList.add('active');
+                navItem.classList.add('active');
+
+                // Load page-specific data
+                this.loadPageData(pageName);
+            },
+
+            loadPageData: function(pageName) {
+                switch(pageName) {
+                    case 'dashboard':
+                        this.loadDashboardData();
+                        break;
+                    case 'users':
+                        this.loadUsers();
+                        break;
+                    case 'faculty':
+                        this.loadFaculty();
+                        break;
+                    case 'students':
+                        this.loadStudents();
+                        break;
+                    case 'attendance':
+                        this.loadAttendance();
+                        break;
+                    case 'notices':
+                        this.loadNotices();
+                        break;
+                    case 'logs':
+                        this.loadLogs();
+                        break;
+                }
+            },
+
+            // --- Dashboard Functions ---
+            loadDashboardData: function() {
+                this.updateStats();
+                this.loadRecentActivity();
+                this.updateCharts();
+            },
+
+            updateStats: function() {
+                // Calculate total users
+                const totalUsers = this.data.users.length + this.data.faculty.length + this.data.students.length;
+                document.getElementById('totalUsers').textContent = totalUsers;
+
+                // Faculty count
+                document.getElementById('totalFaculty').textContent = this.data.faculty.length;
+
+                // Student count
+                document.getElementById('totalStudents').textContent = this.data.students.length;
+
+                // Today's attendance
+                const today = new Date().toISOString().split('T')[0];
+                const todayAttendance = this.data.attendance.filter(record => record.date === today);
+                const totalToday = todayAttendance.length;
+                const presentToday = todayAttendance.filter(record => record.status === 'Present').length;
+                const attendanceRate = totalToday > 0 ? Math.round((presentToday / totalToday) * 100) : 0;
+                document.getElementById('todayAttendance').textContent = attendanceRate + '%';
+            },
+
+            loadRecentActivity: function() {
+                const activityContainer = document.getElementById('recentActivity');
+                const recentLogs = this.data.logs.slice(-5).reverse();
+
+                if (recentLogs.length === 0) {
+                    activityContainer.innerHTML = '<p class="text-muted">No recent activity found.</p>';
+                    return;
+                }
+
+                activityContainer.innerHTML = recentLogs.map(log => `
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <div>
+                            <strong>${log.user}</strong> ${log.action}
+                            <br><small class="text-muted">${log.details}</small>
+                        </div>
+                        <small class="text-muted">${new Date(log.timestamp).toLocaleString()}</small>
+                    </div>
+                `).join('');
+            },
+
+            // --- User Management ---
+            loadUsers: function() {
+                const tbody = document.getElementById('usersTableBody');
+                const allUsers = [
+                    ...this.data.users.map(u => ({...u, role: 'user'})),
+                    ...this.data.faculty.map(f => ({...f, role: 'faculty'})),
+                    ...this.data.students.map(s => ({...s, role: 'student', email: `student${s.roll}@attendpro.com`}))
+                ];
+
+                if (allUsers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No users found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = allUsers.map(user => `
+                    <tr>
+                        <td>${user.id || user.roll || 'N/A'}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email || 'N/A'}</td>
+                        <td><span class="badge bg-${this.getRoleBadgeColor(user.role)}">${user.role.toUpperCase()}</span></td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>${new Date().toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="AdminApp.editUser('${user.id || user.roll}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="AdminApp.deleteUser('${user.id || user.roll}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            },
+
+            getRoleBadgeColor: function(role) {
+                const colors = {
+                    'admin': 'danger',
+                    'faculty': 'primary',
+                    'student': 'success',
+                    'user': 'secondary'
+                };
+                return colors[role] || 'secondary';
+            },
+
+            showAddUserModal: function() {
+                document.getElementById('addUserModal').classList.add('active');
+            },
+
+            closeModal: function(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+            },
+
+            // --- Faculty Management ---
+            loadFaculty: function() {
+                const tbody = document.getElementById('facultyTableBody');
+                const faculty = this.data.faculty;
+
+                if (faculty.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No faculty found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = faculty.map(f => `
+                    <tr>
+                        <td>${f.id || 'FAC' + Math.random().toString(36).substr(2, 9)}</td>
+                        <td>${f.name}</td>
+                        <td>${f.email || 'faculty@attendpro.com'}</td>
+                        <td>${f.department || 'Computer Science'}</td>
+                        <td>${f.class || 'All Classes'}</td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="AdminApp.editFaculty('${f.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="AdminApp.deleteFaculty('${f.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            },
+
+            // --- Student Management ---
+            loadStudents: function() {
+                const tbody = document.getElementById('studentsTableBody');
+                const students = this.data.students;
+
+                if (students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No students found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = students.map(s => {
+                    const studentAttendance = this.data.attendance.filter(a => a.student_id === parseInt(s.roll));
+                    const attendanceRate = studentAttendance.length > 0 ? 
+                        Math.round((studentAttendance.filter(a => a.status === 'Present').length / studentAttendance.length) * 100) : 0;
+
+                    return `
+                        <tr>
+                            <td>${s.roll}</td>
+                            <td>${s.name}</td>
+                            <td>${s.email || `student${s.roll}@attendpro.com`}</td>
+                            <td>${s.class}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress me-2" style="width: 50px; height: 8px;">
+                                        <div class="progress-bar bg-${attendanceRate >= 75 ? 'success' : attendanceRate >= 50 ? 'warning' : 'danger'}" 
+                                             style="width: ${attendanceRate}%"></div>
+                                    </div>
+                                    <small>${attendanceRate}%</small>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="AdminApp.editStudent('${s.roll}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="AdminApp.deleteStudent('${s.roll}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            },
+
+            // --- Attendance Overview ---
+            loadAttendance: function() {
+                const today = new Date().toISOString().split('T')[0];
+                const todayAttendance = this.data.attendance.filter(record => record.date === today);
+                
+                // Update attendance stats
+                const avgAttendance = this.data.attendance.length > 0 ? 
+                    Math.round((this.data.attendance.filter(a => a.status === 'Present').length / this.data.attendance.length) * 100) : 0;
+                document.getElementById('avgAttendance').textContent = avgAttendance + '%';
+
+                const totalClasses = [...new Set(todayAttendance.map(a => a.subject))].length;
+                document.getElementById('totalClasses').textContent = totalClasses;
+
+                const absentToday = todayAttendance.filter(a => a.status === 'Absent').length;
+                document.getElementById('absentToday').textContent = absentToday;
+
+                // Update charts
+                this.updateAttendanceCharts();
+            },
+
+            // --- Notice Management ---
+            loadNotices: function() {
+                const noticesContainer = document.getElementById('noticesList');
+                const notices = this.data.notices;
+
+                if (notices.length === 0) {
+                    noticesContainer.innerHTML = '<p class="text-muted">No notices found.</p>';
+                    return;
+                }
+
+                noticesContainer.innerHTML = notices.map(notice => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title">${notice.title}</h5>
+                                    <p class="card-text">${notice.message || notice.content}</p>
+                                    ${notice.image ? `<img src="${notice.image}" style="max-width: 200px; border-radius: 8px;">` : ''}
+                                </div>
+                                <div>
+                                    <span class="badge bg-${this.getPriorityColor(notice.priority)}">${notice.priority?.toUpperCase() || 'MEDIUM'}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> ${new Date(notice.date).toLocaleDateString()}
+                                    ${notice.faculty ? `<br><i class="fas fa-user"></i> ${notice.faculty}` : ''}
+                                </small>
+                                <div>
+                                    <button class="btn btn-sm btn-primary" onclick="AdminApp.editNotice(${notice.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="AdminApp.deleteNotice(${notice.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            getPriorityColor: function(priority) {
+                const colors = {
+                    'high': 'danger',
+                    'medium': 'warning',
+                    'low': 'info'
+                };
+                return colors[priority] || 'secondary';
+            },
+
+            // --- Activity Logs ---
+            loadLogs: function() {
+                const tbody = document.getElementById('logsTableBody');
+                const logs = this.data.logs;
+
+                if (logs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No logs found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = logs.slice(-50).reverse().map(log => `
+                    <tr>
+                        <td>${new Date(log.timestamp).toLocaleString()}</td>
+                        <td>${log.user}</td>
+                        <td>${log.action}</td>
+                        <td>${log.details}</td>
+                        <td>${log.ip || 'N/A'}</td>
+                    </tr>
+                `).join('');
+            },
+
+            // --- Charts ---
+            initializeCharts: function() {
+                this.createAttendanceChart();
+                this.createUserChart();
+                this.createWeeklyAttendanceChart();
+                this.createClassAttendanceChart();
+                this.createUsageChart();
+                this.createPerformanceChart();
+            },
+
+            createAttendanceChart: function() {
+                const ctx = document.getElementById('attendanceChart');
+                if (!ctx) return;
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                        datasets: [{
+                            label: 'Attendance Rate',
+                            data: [85, 87, 83, 89, 86, 82],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            },
+
+            createUserChart: function() {
+                const ctx = document.getElementById('userChart');
+                if (!ctx) return;
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Faculty', 'Students', 'Admin'],
+                        datasets: [{
+                            data: [this.data.faculty.length, this.data.students.length, this.data.users.length],
+                            backgroundColor: ['#3b82f6', '#10b981', '#ef4444']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            },
+
+            createWeeklyAttendanceChart: function() {
+                const ctx = document.getElementById('weeklyAttendanceChart');
+                if (!ctx) return;
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                        datasets: [{
+                            label: 'Present',
+                            data: [120, 125, 118, 130, 122],
+                            backgroundColor: '#10b981'
+                        }, {
+                            label: 'Absent',
+                            data: [15, 12, 18, 10, 14],
+                            backgroundColor: '#ef4444'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                stacked: true
+                            },
+                            y: {
+                                stacked: true
+                            }
+                        }
+                    }
+                });
+            },
+
+            createClassAttendanceChart: function() {
+                const ctx = document.getElementById('classAttendanceChart');
+                if (!ctx) return;
+
+                const classes = [...new Set(this.data.students.map(s => s.class))];
+                const attendanceData = classes.map(cls => {
+                    const clsStudents = this.data.students.filter(s => s.class === cls);
+                    const clsAttendance = this.data.attendance.filter(a => 
+                        clsStudents.some(s => parseInt(s.roll) === a.student_id)
+                    );
+                    return clsAttendance.length > 0 ? 
+                        Math.round((clsAttendance.filter(a => a.status === 'Present').length / clsAttendance.length) * 100) : 0;
+                });
+
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: classes,
+                        datasets: [{
+                            label: 'Attendance %',
+                            data: attendanceData,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.2)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            },
+
+            createUsageChart: function() {
+                const ctx = document.getElementById('usageChart');
+                if (!ctx) return;
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Faculty Logins',
+                            data: [450, 520, 480, 550, 590, 610],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                        }, {
+                            label: 'Student Logins',
+                            data: [1200, 1350, 1280, 1420, 1580, 1650],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            },
+
+            createPerformanceChart: function() {
+                const ctx = document.getElementById('performanceChart');
+                if (!ctx) return;
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['System Response', 'Data Loading', 'User Experience', 'Feature Usage'],
+                        datasets: [{
+                            label: 'Performance Score',
+                            data: [95, 88, 92, 85],
+                            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            },
+
+            // --- Utility Functions ---
+            showNotification: function(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification show ${type}`;
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            },
+
+            logActivity: function(action, details) {
+                const log = {
+                    user: sessionStorage.getItem('adminUser') || 'admin',
+                    action: action,
+                    details: details,
+                    timestamp: new Date().toISOString(),
+                    ip: '127.0.0.1'
+                };
+                this.data.logs.push(log);
+                localStorage.setItem('activityLogs', JSON.stringify(this.data.logs));
+            },
+
+            logout: function() {
+                this.logActivity('Logged Out', 'Admin session ended');
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('adminUser');
+                this.showNotification('Logged out successfully!', 'info');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            },
+
+            // --- Placeholder Functions ---
+            editUser: function(userId) {
+                this.showNotification('Edit user functionality coming soon!', 'info');
+            },
+
+            deleteUser: function(userId) {
+                if (confirm('Are you sure you want to delete this user?')) {
+                    this.showNotification('User deleted successfully!', 'success');
+                }
+            },
+
+            editFaculty: function(facultyId) {
+                this.showNotification('Edit faculty functionality coming soon!', 'info');
+            },
+
+            deleteFaculty: function(facultyId) {
+                if (confirm('Are you sure you want to delete this faculty?')) {
+                    this.showNotification('Faculty deleted successfully!', 'success');
+                }
+            },
+
+            editStudent: function(studentId) {
+                this.showNotification('Edit student functionality coming soon!', 'info');
+            },
+
+            deleteStudent: function(studentId) {
+                if (confirm('Are you sure you want to delete this student?')) {
+                    this.showNotification('Student deleted successfully!', 'success');
+                }
+            },
+
+            editNotice: function(noticeId) {
+                this.showNotification('Edit notice functionality coming soon!', 'info');
+            },
+
+            deleteNotice: function(noticeId) {
+                if (confirm('Are you sure you want to delete this notice?')) {
+                    this.data.notices = this.data.notices.filter(n => n.id !== noticeId);
+                    localStorage.setItem('notices', JSON.stringify(this.data.notices));
+                    this.loadNotices();
+                    this.logActivity('Deleted Notice', `Notice ID: ${noticeId}`);
+                    this.showNotification('Notice deleted successfully!', 'success');
+                }
+            },
+
+            generateReport: function() {
+                const reportType = document.getElementById('reportType').value;
+                const dateRange = document.getElementById('dateRange').value;
+                
+                this.showNotification(`Generating ${reportType} report for ${dateRange}...`, 'info');
+                
+                setTimeout(() => {
+                    this.showNotification('Report generated successfully!', 'success');
+                }, 2000);
+            },
+
+            saveSettings: function() {
+                const settings = {
+                    systemName: document.getElementById('systemName').value,
+                    adminEmail: document.getElementById('adminEmail').value,
+                    defaultTime: document.getElementById('defaultTime').value,
+                    sessionDuration: document.getElementById('sessionDuration').value
+                };
+                
+                localStorage.setItem('systemSettings', JSON.stringify(settings));
+                this.data.settings = settings;
+                this.showNotification('Settings saved successfully!', 'success');
+            },
+
+            backupData: function() {
+                const allData = {
+                    users: this.data.users,
+                    faculty: this.data.faculty,
+                    students: this.data.students,
+                    attendance: this.data.attendance,
+                    notices: this.data.notices,
+                    logs: this.data.logs,
+                    settings: this.data.settings
+                };
+                
+                const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `AttendPro_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Data backup created successfully!', 'success');
+            },
+
+            restoreData: function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const importedData = JSON.parse(e.target.result);
+                                // Restore all data
+                                Object.keys(importedData).forEach(key => {
+                                    if (importedData[key]) {
+                                        localStorage.setItem(key, JSON.stringify(importedData[key]));
+                                        this.data[key] = importedData[key];
+                                    }
+                                });
+                                
+                                this.init();
+                                this.showNotification('Data restored successfully!', 'success');
+                            } catch (error) {
+                                this.showNotification('Error restoring data: Invalid file format.', 'error');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            },
+
+            clearAllData: function() {
+                if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                    if (confirm('This will delete ALL users, attendance, notices, and settings. Are you absolutely sure?')) {
+                        localStorage.clear();
+                        this.data = {
+                            users: [],
+                            faculty: [],
+                            students: [],
+                            attendance: [],
+                            notices: [],
+                            logs: [],
+                            settings: {}
+                        };
+                        this.init();
+                        this.showNotification('All data has been cleared.', 'success');
+                    }
+                }
+            },
+
+            refreshActivity: function() {
+                this.loadRecentActivity();
+                this.showNotification('Activity refreshed!', 'info');
+            },
+
+            refreshLogs: function() {
+                this.loadLogs();
+                this.showNotification('Logs refreshed!', 'info');
+            },
+
+            updateCharts: function() {
+                // Charts are already initialized, just update data if needed
+                this.showNotification('Charts updated!', 'info');
+            },
+
+            updateAttendanceCharts: function() {
+                // Update attendance-specific charts
+                this.showNotification('Attendance charts updated!', 'info');
+            },
+
+            bindEvents: function() {
+                // Add user form submission
+                document.getElementById('addUserForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const newUser = {
+                        id: Date.now().toString(),
+                        name: document.getElementById('newUserName').value,
+                        email: document.getElementById('newUserEmail').value,
+                        role: document.getElementById('newUserRole').value,
+                        password: document.getElementById('newUserPassword').value,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    this.data.users.push(newUser);
+                    localStorage.setItem('adminUsers', JSON.stringify(this.data.users));
+                    this.logActivity('Added User', `New user: ${newUser.name} (${newUser.role})`);
+                    this.loadUsers();
+                    this.closeModal('addUserModal');
+                    this.showNotification('User added successfully!', 'success');
+                    
+                    // Reset form
+                    document.getElementById('addUserForm').reset();
+                });
+            }
+        };
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication before initializing
+            if (checkAuth()) {
+                AdminApp.init();
+            }
+        });
+    </script>
+</body>
+</html>
